@@ -1,3 +1,4 @@
+//전 코드(최종본)
 <!DOCTYPE html>
 <html>
 
@@ -85,6 +86,7 @@
                 const image = event.target.result.split(",")[1];
 
                 callExchangeAPI().then(function (dealBasR) {
+                    console.log(dealBasR);
                     axios({
                         method: "POST",
                         url: "https://detect.roboflow.com/dollar-wdujc/3",
