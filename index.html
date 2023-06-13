@@ -38,7 +38,7 @@
 <body>
     <div id="container">
         <div id="photo-button-container">
-            <input type="file" id="imageInput">
+            <input type="file" id="imageInput" onchange="fileSelected()">
             <button onclick="callAPI()">디텍션</button>
             <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -65,7 +65,6 @@
                     const usdData = data.find(item => item.cur_nm === "미국 달러");
                     const dealBasR = parseInt(usdData.deal_bas_r.replace(",", "")); // 쉼표 제거 후 숫자로 변환
                     return dealBasR;
-                    
                 });
         }
 
@@ -76,7 +75,6 @@
             const fileInput = document.getElementById("imageInput");
             const file = fileInput.files[0];
             if (!file) {
-                
                 console.log("파일이 선택되지 않았습니다.");
                 button.disabled = false;
                 return;
@@ -103,7 +101,7 @@
                             const classNames = jsonData.predictions.map((prediction) => prediction.class);
 
                             const resultDiv = document.getElementById("result");
-                            resultDiv.textContent = classNames.map((className, index) => {
+                            resultDiv.innerHTML = classNames.map((className, index) => {
                                 const value = jsonData.predictions[index].value;
 
                                 let multipliedValue;
@@ -119,8 +117,8 @@
                                 const calculatedValue = multipliedValue * dealBasR; // 환율과 곱한 값 계산
                                 const formattedValue = calculatedValue.toLocaleString();
                                 return "현재 환율에 맞는 금액은 " + formattedValue + "원 입니다";
-                                
-                            }).join(", ");  
+
+                            }).join(", ");
                         })
                         .catch(function (error) {
                             console.log(error.message);
@@ -134,6 +132,11 @@
             };
 
             reader.readAsDataURL(file);
+        }
+
+        // 파일 선택 완료 시 콘솔에 메시지 출력
+        function fileSelected() {
+            console.log("파일 선택 완료");
         }
 
         // 초기화
