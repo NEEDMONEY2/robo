@@ -1,9 +1,5 @@
-<!-- 기타 환율api 사용 -->
 <!DOCTYPE html>
 <html>
-<div id="popup" style="display: none;">
-    <p>!조금 멀리서 찍어주세요!</p>
-</div>
 
 <head>
     <meta charset="UTF-8">
@@ -42,14 +38,16 @@
 <body>
     <div id="container">
         <div id="photo-button-container">
-            <input type="file" id="imageInput">
-            <button onclick="callAPI()">디텍션</button>
-            <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-            <!-- <button id="photo-button">Camera</button> -->
-
-            <div id="result"></div>
+            <label for="imageInput">CAMERA</label>
         </div>
+        <input type="file" id="imageInput" name="imageInput" accept="image/*" onchange="loadFile(this)">
+    </div>
+
+    <div id="container_2">
+        <button id="result-button-container" onclick="callAPI()">환전 결과</button>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <div id="result"></div>
+
     </div>
 
     <!-- 환율 api 호출 스크립트 -->
@@ -75,7 +73,7 @@
             const file = fileInput.files[0];
 
             const fileSize = file.size;
-            const maxSize =  5.0 * 1024 * 1024; // 예시: 4.6MB 제한 ( 10,240 KB)
+            const maxSize =  1.8 * 1024;
             if (fileSize > maxSize) {
                 // 파일 크기가 제한을 초과할 경우 팝업을 표시하고 종료
                 alert("멀리서 찍어주세요.");
@@ -85,7 +83,6 @@
 
             const reader = new FileReader();
             reader.onload = function (event) {
-
                 const image = event.target.result.split(",")[1];
 
                 axios({
@@ -104,36 +101,41 @@
                         const classNames = jsonData.predictions.map((prediction) => prediction.class);
 
                         const resultDiv = document.getElementById("result");
-                        resultDiv.textContent = classNames.map((className, index) => {
+                        resultDiv.innerHTML = classNames.map((className, index) => {
                             const value = jsonData.predictions[index].value;
 
+
                             let multipliedValue;
-                            let message;
 
                             if (className === "one-front") {
                                 multipliedValue = (1 * basePrice).toLocaleString();
-                                message = "현재 환율에 맞는 금액은 " + multipliedValue + "원 입니다";
                             } else if (className === "twenty-front") {
                                 multipliedValue = (20 * basePrice).toLocaleString();
-                                message = "현재 환율에 맞는 금액은 " + multipliedValue + "원 입니다";
                             } else {
-                                alert("국가를 다시 설정해주세요");
+                                multipliedValue = value.toLocaleString();
                             }
 
-                            return message;
-                        }).join(", ");  
-                            // TODO: 클래스 이름을 원하는 방식으로 처리
-                        })
-                            .catch(function (error) {
-                                console.log(error.message);
-                            })
-                            .finally(function () {
-                                button.disabled = false; // API 요청 후 버튼 활성화
-                            });
-                    };
+                            return "환전 계산 결과 <span class='multiplied-value'>  " + multipliedValue + " </span> 원 입니다";
+                        }).join(", ");
 
-                reader.readAsDataURL(file);
-            }
+                        const multipliedValueElements = document.getElementsByClassName("multiplied-value");
+                        for (let i = 0; i < multipliedValueElements.length; i++) {
+                            multipliedValueElements[i].style.color = "red";
+
+                            // TODO: 클래스 이름을 원하는 방식으로 처리
+                        }
+                    })
+
+                    .catch(function (error) {
+                        console.log(error.message);
+                    })
+                    .finally(function () {
+                        button.disabled = false; // API 요청 후 버튼 활성화
+                    });
+            };
+
+            reader.readAsDataURL(file);
+        }
     </script>
 
 </body>
