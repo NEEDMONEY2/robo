@@ -1,6 +1,9 @@
 <!-- 기타 환율api 사용 -->
 <!DOCTYPE html>
 <html>
+<div id="popup" style="display: none;">
+    <p>조금 멀리서 찍어주세요.</p>
+</div>
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +14,7 @@
 
 <body>
 
-    <h1 id="title" style="font-size:50px;">Exchange Noww</h1>
+    <h1 id="title" style="font-size:50px;">Exchange Now</h1>
     <h2 style="color: mediumblue" style="font-size:10px;">CWNU Capstone 2023</h2>
 
     <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fd6lsfJ%2Fbtsfg3V9fHF%2Fkk8CaVFkhjkxjcPjIyj5XK%2Fimg.png"
@@ -71,6 +74,16 @@
             const fileInput = document.getElementById("imageInput");
             const file = fileInput.files[0];
 
+            const fileSize = file.size;
+            const maxSize = 10 * 1024 * 1024; // 예시: 10MB 제한
+
+            if (fileSize > maxSize) {
+                // 파일 크기가 제한을 초과할 경우 팝업을 표시하고 종료
+                document.getElementById("popup").style.display = "block";
+                button.disabled = false; // 버튼 활성화
+                return;
+            }
+
             const reader = new FileReader();
             reader.onload = function (event) {
                 const image = event.target.result.split(",")[1];
@@ -97,11 +110,11 @@
                             let multipliedValue;
 
                             if (className === "one-front") {
-                                multipliedValue = 1 * basePrice ;
+                                multipliedValue = (1 * basePrice).toLocaleString();
                             } else if (className === "twenty-front") {
-                                multipliedValue = 20 * basePrice;
+                                multipliedValue = (20 * basePrice).toLocaleString();
                             } else {
-                                multipliedValue = value
+                                multipliedValue = value.toLocaleString();
                             }
 
                             return "현재 환율에 맞는 금액은 " + multipliedValue + "원 입니다";
