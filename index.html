@@ -56,7 +56,7 @@
         function checkFileSize(input) {
             const file = input.files[0];
             const fileSize = file.size;
-            const maxSize = 3.0 * 1024 * 1024; //70kb
+            const maxSize = 4.4 * 1024 * 1024; //70kb
             if (fileSize > maxSize) {
                 alert("멀리서 찍어주세요.");
                 document.getElementById("result-button-container").disabled = true;
